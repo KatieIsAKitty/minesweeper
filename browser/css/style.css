@@ -1,0 +1,71 @@
+.play-hidden {
+  background-image: "/images/tile.png";
+  width: 20px;
+  height: 20px;
+}
+
+.play-empty {
+  background-image: "/images/empty.png";
+  width: 20px;
+  height: 20px;
+}
+
+.play-mine {
+  background-image: "/images/mine.png";
+  width: 20px;
+  height: 20px;
+}
+
+.play-flagged {
+  background-image: "/images/flag.png";
+  width: 20px;
+  height: 20px;
+}
+
+.play-1 {
+  background-image: "/images/1.png";
+  width: 20px;
+  height: 20px;
+}
+
+.play-2 {
+  background-image: "/images/2.png";
+  width: 20px;
+  height: 20px;
+}
+
+.play-3 {
+  background-image: "/images/3.png";
+  width: 20px;
+  height: 20px;
+}
+
+.play-4 {
+  background-image: "/images/4.png";
+  width: 20px;
+  height: 20px;
+}
+
+.play-5 {
+  background-image: "/images/5.png";
+  width: 20px;
+  height: 20px;
+}
+
+.play-6 {
+  background-image: "/images/6.png";
+  width: 20px;
+  height: 20px;
+}
+
+.play-7 {
+  background-image: "/images/7.png";
+  width: 20px;
+  height: 20px;
+}
+
+.play-8 {
+  background-image: "/images/8.png";
+  width: 20px;
+  height: 20px;
+}

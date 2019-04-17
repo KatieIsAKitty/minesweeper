@@ -35,9 +35,9 @@ class Tile {
 }
 
 class Grid {
-  constructor(height, width) {
+  constructor(height = 10, width = 10, id = 0) {
     this.tiles = [];
-    this.id = 0;
+    this.id = id;
     for (let x = 0; x < width; x += 1) {
       for (let y = 0; y < height; y += 1) {
         const type = Math.random() < 0.8 ? 0 : 1;
