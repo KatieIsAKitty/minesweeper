@@ -76,6 +76,7 @@ async function genPage(playgrid) {
 
 const server = createServer(async (req, res) => {
   const params = new URL(req.url, 'http://example.com/').searchParams;
+  res.setHeader('Access-Control-Allow-Origin', '*');
   // console.info(req.url);
   if (req.url === '/css/style.css') {
     try {
