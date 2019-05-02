@@ -14,7 +14,7 @@ spyElement.onmousedown = (event) => {
     if (event.target.className === 'play-flagged') {
       return;
     }
-    fetch(`http://${window.location.hostname}:8081/grid?x=${x}&y=${y}&grid=${params.get('grid')}`)
+    fetch(`http://${window.location.hostname}:8080/grid?x=${x}&y=${y}&grid=${params.get('grid')}`)
       .then((r) => {
         r.json().then((lines) => {
           const clicked = document.getElementById(`x${x}y${y}`);
@@ -32,8 +32,8 @@ spyElement.onmousedown = (event) => {
           }
           clicked.className = `play-${cclass}`;
 
-          console.log(lines.complete);
-          if (lines.complete === '1') {
+          // console.log(lines.complete);
+          if (lines.complete === 1) {
             // eslint-disable-next-line
             if (confirm('You won! Click "Ok" to play again with a 10x10 grid.')) {
               window.location.href = '/play?w=10&h=10';
@@ -56,9 +56,8 @@ spyElement.onmousedown = (event) => {
     }
     if (event.target.className === 'play-hidden') {
       event.target.className = 'play-flagged';
-      return;
     }
   }
-  console.log(event.target.id);
+  // console.log(event.target.id);
 };
 document.addEventListener('contextmenu', (event) => event.preventDefault());
