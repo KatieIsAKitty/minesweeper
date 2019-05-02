@@ -76,15 +76,16 @@ async function genPage(playgrid) {
 
 const server = createServer(async (req, res) => {
   const params = new URL(req.url, 'http://example.com/').searchParams;
-  res.setHeader('Access-Control-Allow-Origin', '*');
   // console.info(req.url);
   if (req.url === '/css/style.css') {
     try {
       const css = await readFile('./css/style.css');
+      res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Content-Type', 'text/css');
       res.end(css);
     } catch (e) {
       // console.error(e);
+      res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Content-Type', 'text/html');
       res.end('I did a bad, try again later');
     }
@@ -94,6 +95,7 @@ const server = createServer(async (req, res) => {
     try {
       createReadStream(`.${req.url}`).pipe(res);
     } catch (e) {
+      res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Content-Type', 'text/html');
       res.end('Image probably doesn\'t exist');
     }
@@ -102,10 +104,12 @@ const server = createServer(async (req, res) => {
   if (req.url === '/browser.js') {
     try {
       const css = await readFile('./browser.js');
+      res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Content-Type', 'text/javascript');
       res.end(css);
     } catch (e) {
       // console.error(e);
+      res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Content-Type', 'text/html');
       res.end('I did a bad, try again later');
     }
@@ -126,6 +130,7 @@ const server = createServer(async (req, res) => {
       outstr += ',';
     }
     await db.run(`INSERT INTO grids VALUES ("${id}", ?, false)`, outstr);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.writeHead(302, {
       Location: `/?grid=${id}`,
     });
@@ -134,13 +139,14 @@ const server = createServer(async (req, res) => {
   }
   if (params.get('grid')) {
     if (!safetyRegex.test(params.get('grid'))) {
+      res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Content-Type', 'text/html');
       res.end('Did you really just try to sql inject me? Get the fuck outta here');
     }
     const resp = await db.get(`SELECT grid,state FROM grids WHERE id="${params.get('grid')}"`);
     if (resp === undefined) {
-      res.setHeader('Content-Type', 'text/html');
       res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Content-Type', 'text/html');
       res.statusCode = '404';
       res.statusMessage = 'Not found';
       res.end('No game with that ID was found');
@@ -187,6 +193,7 @@ const server = createServer(async (req, res) => {
 
     // console.log(`grid: ${grid}`);
     const playG = await genPage(grid.overlay);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Content-Type', 'text/html');
     res.end(playG);
   }
