@@ -1,0 +1,57 @@
+div[class*="row-"] {
+  height: 21px;
+}
+
+div[class*="play-"] {
+  float: left;
+  width: 20px;
+  height: 20px;
+}
+
+.play-hidden {
+  background-image: url("/images/tile.png");
+}
+
+.play-empty {
+  background-image: url("/images/empty.png");
+}
+
+.play-mine {
+  background-image: url("/images/mine.png");
+}
+
+.play-flagged {
+  background-image: url("/images/flag.png");
+}
+
+.play-1 {
+  background-image: url("/images/1.png");
+}
+
+.play-2 {
+  background-image: url("/images/2.png");
+}
+
+.play-3 {
+  background-image: url("/images/3.png");
+}
+
+.play-4 {
+  background-image: url("/images/4.png");
+}
+
+.play-5 {
+  background-image: url("/images/5.png");
+}
+
+.play-6 {
+  background-image: url("/images/6.png");
+}
+
+.play-7 {
+  background-image: url("/images/7.png");
+}
+
+.play-8 {
+  background-image: url("/images/8.png");
+}
