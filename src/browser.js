@@ -14,7 +14,7 @@ spyElement.onmousedown = (event) => {
     if (event.target.className === 'play-flagged') {
       return;
     }
-    fetch(`http://${window.location.hostname}:8080/grid?x=${x}&y=${y}&grid=${params.get('grid')}`)
+    fetch(`http://${window.location.hostname}:8080/grid?x=${x}&y=${y}&grid=${params.get('grid')}`, { mode: 'no-cors' })
       .then((r) => {
         r.json().then((lines) => {
           const clicked = document.getElementById(`x${x}y${y}`);
