@@ -76,7 +76,8 @@ async function genPage(playgrid) {
 
 const server = createServer(async (req, res) => {
   const params = new URL(req.url, 'http://example.com/').searchParams;
-  // console.info(req.url);
+  console.info(req.url);
+  console.info(params);
   if (req.url === '/css/style.css') {
     try {
       const css = await readFile('./css/style.css');
@@ -87,6 +88,8 @@ const server = createServer(async (req, res) => {
       // console.error(e);
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Content-Type', 'text/html');
+      res.statusCode = '502';
+      res.statusMessage = 'Internal server error';
       res.end('I did a bad, try again later');
     }
     return;
@@ -97,6 +100,8 @@ const server = createServer(async (req, res) => {
     } catch (e) {
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Content-Type', 'text/html');
+      res.statusCode = '404';
+      res.statusMessage = 'Not found';
       res.end('Image probably doesn\'t exist');
     }
     return;
@@ -111,6 +116,8 @@ const server = createServer(async (req, res) => {
       // console.error(e);
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Content-Type', 'text/html');
+      res.statusCode = '502';
+      res.statusMessage = 'Internal server error';
       res.end('I did a bad, try again later');
     }
     return;
