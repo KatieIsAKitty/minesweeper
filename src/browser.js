@@ -18,32 +18,32 @@ spyElement.onmousedown = (event) => {
       .then((r) => {
         r.json().then((lines) => {
           const clicked = document.getElementById(`x${x}y${y}`);
+          console.log(lines.updated);
           let cclass;
-          if (lines.overlay[y][x] === 'M') {
+          if (lines.updated === 'M') {
             cclass = 'mine';
-          } else if (lines.overlay[y][x] === 'F') {
+          } else if (lines.updated === 'F') {
             cclass = 'flagged';
-          } else if (lines.overlay[y][x] === 'N') {
+          } else if (lines.updated === 'N') {
             cclass = 'empty';
-          } else if (!Number.isNaN(parseInt(lines.overlay[y][x], 10))) {
-            cclass = lines.overlay[y][x];
+          } else if (!Number.isNaN(parseInt(lines.updated, 10))) {
+            cclass = lines.updated;
           } else {
             cclass = 'hidden';
           }
           clicked.className = `play-${cclass}`;
 
-          // console.log(lines.complete);
           if (lines.complete === 1) {
             // eslint-disable-next-line
             if (confirm('You won! Click "Ok" to play again with a 10x10 grid.')) {
-              window.location.href = '/play?w=10&h=10';
+              window.location.href = '/play?w=10&h=10&m=10';
             }
             return;
           }
-          if (lines.overlay.some((line) => line.some((element) => element === 'M'))) {
+          if (lines.updated === 'M') {
             // eslint-disable-next-line
             if (confirm('You lost! Click "Ok" to play again with a 10x10 grid.')) {
-              window.location.href = '/play?w=10&h=10';
+              window.location.href = '/play?w=10&h=10&m=10';
             }
           }
         });
@@ -58,6 +58,5 @@ spyElement.onmousedown = (event) => {
       event.target.className = 'play-flagged';
     }
   }
-  // console.log(event.target.id);
 };
 document.addEventListener('contextmenu', (event) => event.preventDefault());

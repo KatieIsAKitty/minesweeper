@@ -1,7 +1,6 @@
 'use strict';
 
 const { createServer } = require('http');
-const { readFile } = require('fs').promises;
 const { createReadStream } = require('fs');
 const crypto = require('crypto');
 const sql = require('sqlite');
@@ -22,9 +21,9 @@ function uuidv4() {
     hexBytes[b[12]]}${hexBytes[b[13]]}${hexBytes[b[14]]}${hexBytes[b[15]]}`;
 }
 
-function newGame(height, width) {
+function newGame(height = 10, width = 10, mines = 10) {
   const uuid = uuidv4();
-  const play = new Grid(height, width, uuid);
+  const play = new Grid(height, width, uuid, mines);
   const playText = [];
   const hidden = [];
   const lines = [];
@@ -34,7 +33,7 @@ function newGame(height, width) {
     playText[i] = [];
   }
   for (const tile of play.tiles) {
-    lines[tile.position.y].push(tile);
+    lines[tile.position.y][tile.position.x] = tile;
   }
   for (const line of lines) {
     for (const tile of line) {
@@ -76,14 +75,10 @@ async function genPage(playgrid) {
 
 const server = createServer(async (req, res) => {
   const params = new URL(req.url, 'http://example.com/').searchParams;
-  console.info(req.url);
-  console.info(params);
+  // console.info(req.url);
   if (req.url === '/css/style.css') {
     try {
-      const css = await readFile('./css/style.css');
-      res.setHeader('Access-Control-Allow-Origin', '*');
-      res.setHeader('Content-Type', 'text/css');
-      res.end(css);
+      createReadStream(`.${req.url}`).pipe(res);
     } catch (e) {
       // console.error(e);
       res.setHeader('Access-Control-Allow-Origin', '*');
@@ -108,10 +103,7 @@ const server = createServer(async (req, res) => {
   }
   if (req.url === '/browser.js') {
     try {
-      const css = await readFile('./browser.js');
-      res.setHeader('Access-Control-Allow-Origin', '*');
-      res.setHeader('Content-Type', 'text/javascript');
-      res.end(css);
+      createReadStream(`.${req.url}`).pipe(res);
     } catch (e) {
       // console.error(e);
       res.setHeader('Access-Control-Allow-Origin', '*');
@@ -124,8 +116,14 @@ const server = createServer(async (req, res) => {
   }
 
   if (params.get('h') && params.get('w')) {
+    if (!/[0-9]+/.test(params.get('h')) || !/[0-9]+/.test(params.get('w'))) {
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Content-Type', 'text/html');
+      res.end('that\'s a Number, moron');
+      return;
+    }
     const id = uuidv4();
-    const grid = newGame(params.get('h'), params.get('w'));
+    const grid = newGame(params.get('h'), params.get('w'), params.get('m') ? params.get('m') : params.get('h') * params.get('w') / 4);
     let outstr = '';
     for (let line = 0; line < grid.overlay.length; line += 1) {
       outstr += grid.overlay[line].join('.');
@@ -149,6 +147,7 @@ const server = createServer(async (req, res) => {
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Content-Type', 'text/html');
       res.end('Did you really just try to sql inject me? Get the fuck outta here');
+      return;
     }
     const resp = await db.get(`SELECT grid,state FROM grids WHERE id="${params.get('grid')}"`);
     if (resp === undefined) {
@@ -175,7 +174,6 @@ const server = createServer(async (req, res) => {
       grid.overlay[params.get('y')][params.get('x')] = grid.underlay[params.get('y')][params.get('x')];
 
       const complete = grid.overlay.every((row, i) => row.every((x, j) => !(grid.underlay[i][j] !== 'M' && x === '■'))) ? 1 : 0;
-      // console.log(complete);
       let outstr = '';
       for (let line = 0; line < grid.overlay.length; line += 1) {
         outstr += grid.overlay[line].join('.');
@@ -194,7 +192,7 @@ const server = createServer(async (req, res) => {
       await db.run(`UPDATE grids SET state="${complete}" WHERE id="${params.get('grid')}"`);
       res.setHeader('Content-Type', 'text/html');
       res.setHeader('Access-Control-Allow-Origin', '*');
-      res.end(JSON.stringify({ overlay: grid.overlay, complete }));
+      res.end(JSON.stringify({ updated: grid.underlay[params.get('y')][params.get('x')], complete }));
       return;
     }
 
